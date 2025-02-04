@@ -30,8 +30,8 @@ void printClockData(void);
 // === Main ====
 int main()
 {
-	// "YYMMDDWHHMMD"
-	char setTimeDate[13] = "240204412305"; // Example: 2024-Feb-04, Wednesday, 12:30:05
+	// "YYMMDDWHHMM" , where W is day of week (sunday =0)
+	char setTimeDate[12] = "24020441230"; // Example: 2024-Feb-04,Thursday, 12:30:00
 	if(!Setup())
 		return -1;
 	if(!IsConnected())
@@ -57,8 +57,6 @@ int main()
 
 
 // === Function Space ===
-
-// Function to setup Radio
 bool Setup(void)
 {
 	busy_wait_ms(100);
