@@ -30,24 +30,31 @@ void printClockData(void);
 // === Main ====
 int main()
 {
-	// "YYMMDDWHHMM" , where W is day of week (sunday =0)
-	char setTimeDate[12] = "24020441230"; // Example: 2024-Feb-04,Thursday, 12:30:00
-	if(!Setup())
+	if(!Setup()) // setup and init I2C
 		return -1;
-	if(!IsConnected())
+	if(!IsConnected()) // check if ds1307 is on I2C bus
 		return -1;
 	busy_wait_ms(1000);
+	
+	// Test 1 write the default data and read back
+	// Date :: 2020/07/09 Fri
+	// Time :: 18:56:00
 	if (myRTC.writeClockDefault() < 0) //Write the default test data
 		return -1;
 	busy_wait_ms(1000);
 	myRTC.readClock(); // read back the default data to rtcData
-	printClockData();  // print it out to console (rtcData)
+	printClockData();  // print out data to console (rtcData)
 	busy_wait_ms(10000);
 
+	// Test 2 write data to writeClock and read back 
+	// Date :: 2024/02/04 Thu
+	// Time :: 12:30:00
+	// "YYMMDDWHHMM" , where W is day of week (sunday =0)
+	char setTimeDate[12] = "24020441230"; // Example: 24-Feb-04,Thursday, 12:30
 	myRTC.writeClock(setTimeDate); //write the time from setTimeDate
 	busy_wait_ms(1000);
-	myRTC.readClock(); // read back the default data to rtcData
-	printClockData();  // print it out to console (rtcData)
+	myRTC.readClock(); // read back the  data to rtcData
+	printClockData();  // print out the data  to console (rtcData)
 	busy_wait_ms(10000);
 
 	return 0;
