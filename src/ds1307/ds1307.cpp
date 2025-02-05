@@ -6,9 +6,9 @@
 	* @brief Constructor for the RTCDS1307 class
 	* @param address I2C address of the DS1307 RTC
 	* @param i2c_type Pointer to the I2C instance
-	* @param sdata Data pin for software I2C
-	* @param sclk Clock pin for software I2C
-	* @param clockspeed I2C clock speed in kHz
+	* @param data Data pin for software I2C
+	* @param clock Clock pin for software I2C
+	* @param CLKspeed I2C clock speed in kHz
 */
 RTCDS1307::RTCDS1307(uint8_t address, i2c_inst_t* i2c_type, uint8_t data, uint8_t  clock, uint16_t CLKspeed) {
 	_address = address;
@@ -49,6 +49,7 @@ void RTCDS1307::DeInitI2C()
 	@brief Writes the default time to the DS1307 RTC 
 	@details Hardcode set RTC time date to 20-07-09-Fri-18-56-00
 		mostly used for testing and debugging  ... mostly
+	@return Integer status of the write operation, less than 1 = error
 */
 int RTCDS1307::writeClockDefault() {
 
@@ -93,8 +94,29 @@ int RTCDS1307::writeClockDefault() {
 	* @return Integer status of the write operation, less than 1 = error
 	*/
 int RTCDS1307::writeClock(char *str) {
-	
-	if (str == nullptr) return 0;
+	// Check for null pointer
+	if (str == nullptr) 
+	{
+		printf("Error: String is a null pointer.\n");
+		return 0;
+	}
+
+	// Check for correct length (11 characters)
+	if (strlen(str) != 11) 
+	{
+		printf("Error: Invalid time format. Expected 11 characters.\n");
+		return 0;
+	}
+
+		// Check if all characters are digits (0-9)
+	for (int i = 0; i < 11; i++) 
+	{
+		if (str[i] < '0' || str[i] > '9') 
+		{
+			printf("Error: Invalid character '%c' at position %d. Expected numeric digits only.\n", str[i], i);
+			return 0;
+		}
+	}
 
  	rtcData.secH = 0;
 	rtcData.secH = 0;
@@ -132,7 +154,7 @@ int RTCDS1307::writeClock(char *str) {
 /*! 
 	@brief Reads the current time from the DS1307 RTC
 	@details updates rtcdata
-	@returns _returnValue
+	@returns _returnValue, less than 1 = error, of number of bytes  
 */
 int RTCDS1307::readClock(void) {
 	uint8_t data_I2C[1];
@@ -146,7 +168,7 @@ int RTCDS1307::readClock(void) {
 
 	_returnValue = i2c_read_timeout_us(_i2c, _address, rtcBuff, sizeof(rtcBuff) ,false, DS1307_I2C_Timeout );
 	if (_returnValue < 1) {
-		printf("Error : Fail to write : I2Bus %i\n", _returnValue );
+		printf("Error : Fail to Read : I2Bus %i\n", _returnValue );
 		return _returnValue;
 	}
 
