@@ -1,6 +1,8 @@
+  [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/paypalme/whitelight976)
+
 # DS1307_PICO 
 
-DS1307 Real time clock module library for Raspberry pi Pico rp2040 SDK C++
+DS1307 Real time clock module library for Raspberry pi Pico SDK C++.
 
 **DS1307 Real time clock (RTC) module**
 
